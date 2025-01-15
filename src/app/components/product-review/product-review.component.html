@@ -1,0 +1,19 @@
+<p>classifier works!</p>
+<p>{{isClassifierReady}}</p>
+
+<form class="comment-form">
+  <mat-form-field 
+    class="full-width"
+    *ngFor="let comment of commentsList"
+  >
+    <mat-label>{{ comment.question }}</mat-label>
+    <textarea matInput name="comment" [(ngModel)]="comment.answer"></textarea>
+  </mat-form-field>
+  
+  <button mat-raised-button
+    [disabled]="! isClassifierReady"
+    (click)="onSubmitClick()"
+  >
+    Submit
+  </button>
+</form>
