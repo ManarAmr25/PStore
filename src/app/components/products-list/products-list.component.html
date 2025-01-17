@@ -1,5 +1,5 @@
 <div
- *ngIf="! isSubmitReview"
+ *ngIf="! isReviewView"
 >
     <div
       *ngFor="let product of products"
@@ -12,9 +12,16 @@
             </mat-card-header>
             <mat-card-actions>
                 <button mat-button
-                  (click)="switchToSubmitReview(product)"
+                  *ngIf="isCustomer()"
+                  (click)="switchToReviewView(product)"
                 >
                 Submit a Review
+                </button>
+                <button mat-button
+                  *ngIf="isAdmin()"
+                  (click)="switchToReviewView(product)"
+                >
+                View Product Reviews
                 </button>
             </mat-card-actions>
         </mat-card>
@@ -22,12 +29,16 @@
 </div>
 
 <div
-  *ngIf="isSubmitReview"
+  *ngIf="isReviewView"
 >
     <app-product-review
-      [product]="currentSelectedProduct"
-      (reviewSubmitted)="newReviewSubmitted($event)"
+      *ngIf="isCustomer()"
     ></app-product-review>
+
+    <app-product-statistics
+      *ngIf="isAdmin()"
+    ></app-product-statistics>
+
     <button mat-button
       (click)="backToProductsList()"
     >

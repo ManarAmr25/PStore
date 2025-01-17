@@ -8,6 +8,11 @@ export interface Comment {
     answer: string;
 }
 
+export interface Review {
+    comments: Comment[];
+    score: number;
+}
+
 export interface Product {
     id: number;
     name: string;

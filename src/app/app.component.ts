@@ -4,7 +4,8 @@ import { RouterOutlet } from '@angular/router';
 import { ProductsListComponent } from './components/products-list/products-list.component';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
-import { Role } from './utils';
+import { Role, Review, Comment } from './utils';
+import { DataProviderService } from './services/data-provider.service';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,8 @@ import { Role } from './utils';
 })
 export class AppComponent {
   role: Role | null = null;
+
+  constructor(private dataProvider: DataProviderService) {}
 
   continueAsCustomer() {
     this.role = Role.customer;

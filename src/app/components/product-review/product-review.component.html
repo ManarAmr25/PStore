@@ -1,3 +1,18 @@
+<mat-card appearance="outlined">
+  <mat-card-header>Product Info</mat-card-header>
+  <mat-card-content>
+    <p>{{'Product ID: ' + getCurrentProductId()}}</p>
+    <p>{{'Product Name: ' + getCurrentProductName()}}</p>
+    <p>{{'Product Description: ' + getCurrentProductDescription()}}</p>
+  </mat-card-content>
+</mat-card>
+
+<mat-card appearance="outlined"
+  *ngIf="isShowRatingScore"
+>
+  <mat-card-content>{{'Rating Score: ' + ratingScore}}</mat-card-content>
+</mat-card>
+
 <form class="comment-form">
   <mat-form-field 
     class="full-width"
@@ -19,5 +34,11 @@
     *ngIf="! isClassifierReady"
   >
     Submitting ...
+  </button>
+
+  <button mat-raised-button
+    (click)="clearFields()"
+  >
+    Clear
   </button>
 </form>

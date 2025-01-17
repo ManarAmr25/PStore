@@ -1,0 +1,29 @@
+<p>product list works!</p>
+<mat-card appearance="outlined">
+  <mat-card-header>Product Info</mat-card-header>
+  <mat-card-content>
+    <p>{{'Product ID: ' + getCurrentProductId()}}</p>
+    <p>{{'Product Name: ' + getCurrentProductName()}}</p>
+    <p>{{'Product Description: ' + getCurrentProductDescription()}}</p>
+  </mat-card-content>
+</mat-card>
+<br>
+<div
+  *ngFor="let review of reviews"
+>
+  <mat-card appearance="outlined">
+    <mat-card-title>{{'Rating: ' + review.score}}</mat-card-title>
+    <mat-card-content>
+      <mat-list class="example-list-wrapping">
+        <div
+        *ngFor="let comment of review.comments"
+        >
+            <mat-list-item lines="3">
+            <span matListItemTitle>{{comment.question}}</span>
+            {{comment.answer}}
+            </mat-list-item>
+        </div>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</div>

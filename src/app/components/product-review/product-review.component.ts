@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy, NgZone} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MDCTextField} from '@material/textfield';
 import {MatInputModule} from '@angular/material/input';
@@ -7,14 +7,16 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {FormsModule} from '@angular/forms';
 import {TextClassifier, FilesetResolver} from '@mediapipe/tasks-text';
-import { Product, Role, Comment } from '../../utils';
+import { Product, Role, Comment, Review } from '../../utils';
+import {MatCardModule} from '@angular/material/card';
+import { DataProviderService } from '../../services/data-provider.service';
 
 
 @Component({
   selector: 'app-product-review',
-  imports: [CommonModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatProgressBarModule, FormsModule],
+  imports: [CommonModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatProgressBarModule, MatCardModule, FormsModule],
   templateUrl: './product-review.component.html',
-  styleUrl: './product-review.component.css'
+  styleUrl: './product-review.component.css',
 })
 
 
@@ -22,14 +24,10 @@ export class ProductReviewComponent{
   textClassifier: TextClassifier | null = null;
   isClassifierReady: boolean;
   commentsList: Comment[] = [];
+  ratingScore: number = 0;
+  isShowRatingScore: boolean = false;
 
-  @Input()
-  product: Product | null = null;
-
-  @Output()
-  reviewSubmitted = new EventEmitter();
-
-  constructor() {
+  constructor(private dataProvider: DataProviderService, private ngZone: NgZone) {
     this.createTextClassifier();
     this.initQuestions();
     this.isClassifierReady = true;
@@ -38,10 +36,10 @@ export class ProductReviewComponent{
   private initQuestions() {
     this.commentsList = [];
     this.commentsList.push({question: 'Did this product meet your expectations?', answer: ''});
-    this.commentsList.push({question: 'How does this product compare to others you\'ve used in the same category?', answer: ''});
-    this.commentsList.push({question: 'What do you think about the product\'s packaging and the delivery process?', answer: ''});
-    this.commentsList.push({question: 'In your opinion, does this product offer good value for the price you paid?', answer: ''});
-    this.commentsList.push({question: 'Do you have any additional comments?', answer: ''});
+    // this.commentsList.push({question: 'How does this product compare to others you\'ve used in the same category?', answer: ''});
+    // this.commentsList.push({question: 'What do you think about the product\'s packaging and the delivery process?', answer: ''});
+    // this.commentsList.push({question: 'In your opinion, does this product offer good value for the price you paid?', answer: ''});
+    // this.commentsList.push({question: 'Do you have any additional comments?', answer: ''});
   }
 
   private async createTextClassifier() {
@@ -56,13 +54,13 @@ export class ProductReviewComponent{
       maxResults: 5
     });
 
-    console.log('>>>> model obtained: ', this.textClassifier);
+    console.log('Classification model is ready: ', this.textClassifier);
   }
 
 
   onSubmitClick() {
     if (this.textClassifier == null || ! this.isClassifierReady) {
-      console.error('>>>>>> Classifier unavailable.');
+      console.error('Classifier unavailable.');
       return;
     }
     
@@ -70,7 +68,7 @@ export class ProductReviewComponent{
 
     setTimeout(() => {
       if (this.textClassifier == null) {
-        console.log('>>>>> Error classifier ...');
+        console.error('Classifier unavailable.');
         return;
       }
 
@@ -98,39 +96,33 @@ export class ProductReviewComponent{
       totalNegative /= this.commentsList.length;
 
       let totalScore = Math.ceil(totalPositive * 100 / 20);
-      this.reviewSubmitted.emit({id: this.product?.id, score: totalScore});
+      this.isShowRatingScore = true;
+      this.ratingScore = totalScore;
+      this.dataProvider.addProductReview(this.getCurrentProductId(), {comments: this.commentsList, score: totalScore});
       this.isClassifierReady = true;
-      this.initQuestions();
     }, 100);
   }
 
-  // computeClassifications(): Promise<string> {
-  //   return new Promise((resolve, reject) => {
-  //     console.log('>>>>> Starting asynchronous functionality...');
-  //     setTimeout(() => {
-  //       if (this.textClassifier == null) {
-  //         console.log('>>>>> Error classifier ...');
-  //         reject('Failure');
-  //         return;
-  //       }
-  //       for (let i = 0; i < this.commentsList.length; i++) {
-  //         const comment = this.commentsList[i];
-  //         let result = this.textClassifier.classify(comment.answer);
-  //         let categories = result.classifications[0].categories;
-  //         console.log('>>>>> result ', i, ': ', categories[0].categoryName, ' = ', categories[0].score,
-  //           ' ', categories[1].categoryName, ' = ', categories[1].score);
-  //         if(categories[0].categoryName === 'positive') {
-  //           comment.positive = categories[0].score;
-  //           comment.negative = categories[1].score;
-  //         } else {
-  //           comment.negative = categories[0].score;
-  //           comment.positive = categories[1].score;
-  //         }
-  //       }
-  //       this.computeTotalScore();
-  //       resolve('Success');
-  //     }, 500);
-  //   });
-  // }
+  sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  getCurrentProductId(): number {
+    return this.dataProvider.getCurrentProductId();
+  }
+
+  getCurrentProductName(): string {
+    return this.dataProvider.getCurrentProductName();
+  }
+
+  getCurrentProductDescription(): string {
+    return this.dataProvider.getCurrentProductDescription();
+  }
+
+  clearFields() {
+    this.ratingScore = 0;
+    this.isShowRatingScore = false;
+    this.initQuestions();
+  }
 
 }
