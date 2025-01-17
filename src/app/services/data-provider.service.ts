@@ -60,4 +60,17 @@ export class DataProviderService {
     return [];
   }
 
+  computeCurrentProductAverageRating() {
+    let currentProductReviews = this.getCurrentProductReviews();
+    if (currentProductReviews != null) {
+      let sumScores = 0;
+      currentProductReviews.forEach((review) => {
+        sumScores += review.score;
+      })
+      return sumScores / currentProductReviews.length;
+    }
+    
+    return 0;
+  }
+
 }

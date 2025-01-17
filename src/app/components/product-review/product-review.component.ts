@@ -100,6 +100,7 @@ export class ProductReviewComponent{
       this.ratingScore = totalScore;
       this.dataProvider.addProductReview(this.getCurrentProductId(), {comments: this.commentsList, score: totalScore});
       this.isClassifierReady = true;
+      this.initQuestions();
     }, 100);
   }
 

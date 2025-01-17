@@ -1,3 +1,8 @@
+export enum Constants {
+    SCORE_UPPER_BOUND = 5,
+    SCORE_LOWER_BOUND = 0
+}
+
 export enum Role {
     customer,
     admin
