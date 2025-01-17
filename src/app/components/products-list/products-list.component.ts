@@ -6,10 +6,11 @@ import { ProductReviewComponent } from '../product-review/product-review.compone
 import { ProductStatisticsComponent } from "../product-statistics/product-statistics.component";
 import { Product, Review, Role, Comment } from '../../utils';
 import { DataProviderService } from '../../services/data-provider.service';
+import { ProductHistogramComponent } from "../product-histogram/product-histogram.component";
 
 @Component({
   selector: 'app-products-list',
-  imports: [CommonModule, MatButtonModule, MatCardModule, ProductReviewComponent, ProductStatisticsComponent],
+  imports: [CommonModule, MatButtonModule, MatCardModule, ProductReviewComponent, ProductStatisticsComponent, ProductHistogramComponent],
   templateUrl: './products-list.component.html',
   styleUrl: './products-list.component.css',
 })
@@ -43,5 +44,29 @@ export class ProductsListComponent {
 
   isAdmin() {
     return this.role != null && this.role == Role.admin;
+  }
+
+  getProductsDisplayNames() {
+    let names: string[] = [];
+    this.products.forEach((product) => {
+      names.push(product.id + '-' + product.name);
+    });
+    return names;
+  }
+
+  getProductsAverageRatings() {
+    let ratingsList: number[] = [];
+    let ratingsMap = this.dataProvider.computeProductsAverageRatings();
+
+    this.products.forEach((product) => {
+      if(ratingsMap.has(product.id)) {
+        let avgRating = ratingsMap.get(product.id);
+        ratingsList.push(avgRating != null ? avgRating : 0);
+      } else {
+        ratingsList.push(0);
+      }
+    });
+
+    return ratingsList;
   }
 }

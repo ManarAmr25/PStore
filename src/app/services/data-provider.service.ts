@@ -61,16 +61,31 @@ export class DataProviderService {
   }
 
   computeCurrentProductAverageRating() {
+    let sumScores: number = 0;
     let currentProductReviews = this.getCurrentProductReviews();
-    if (currentProductReviews != null) {
-      let sumScores = 0;
+    if (currentProductReviews != null && currentProductReviews.length > 0) {
       currentProductReviews.forEach((review) => {
         sumScores += review.score;
       })
-      return sumScores / currentProductReviews.length;
+      sumScores /= currentProductReviews.length;
     }
-    
-    return 0;
+
+    return sumScores;
+  }
+
+  computeProductsAverageRatings() {
+    let ratingsMap = new Map<number, number>();
+
+    this.reviews.forEach((reviews, key) => {
+      let sum = 0;
+      reviews.forEach((review) => {
+        sum += review.score;
+      });
+      sum /= reviews.length;
+      ratingsMap.set(key, sum);
+    });
+
+    return ratingsMap;
   }
 
 }

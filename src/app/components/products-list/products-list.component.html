@@ -1,7 +1,9 @@
 <div
- *ngIf="! isReviewView"
+  class="products-container-div"
+  *ngIf="! isReviewView"
 >
     <div
+      class="products-inner-div"
       *ngFor="let product of products"
     >
         <br>
@@ -45,3 +47,12 @@
     Back to Products
     </button>
 </div>
+
+<app-product-histogram
+  *ngIf="isAdmin() && ! isReviewView"
+  [title]="'Products Average Ratings'"
+  [xAxisLabel]="'Product'"
+  [yAxisLabel]="'Average Rating'"
+  [data]="getProductsAverageRatings()"
+  [labels]="getProductsDisplayNames()"
+></app-product-histogram>
