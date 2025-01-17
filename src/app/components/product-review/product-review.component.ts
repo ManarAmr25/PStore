@@ -4,23 +4,24 @@ import {MDCTextField} from '@material/textfield';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatButtonModule} from '@angular/material/button';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {FormsModule} from '@angular/forms';
 import {TextClassifier, FilesetResolver} from '@mediapipe/tasks-text';
+import { Product, Role, Comment } from '../../utils';
 
 
 @Component({
   selector: 'app-product-review',
-  imports: [CommonModule, MatInputModule, MatFormFieldModule, MatButtonModule, FormsModule],
+  imports: [CommonModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatProgressBarModule, FormsModule],
   templateUrl: './product-review.component.html',
   styleUrl: './product-review.component.css'
 })
 
 
-export class ProductReviewComponent implements OnInit{
+export class ProductReviewComponent{
   textClassifier: TextClassifier | null = null;
-  isClassifierReady: boolean = false;
+  isClassifierReady: boolean;
   commentsList: Comment[] = [];
-  scores: number[] = [];
 
   @Input()
   product: Product | null = null;
@@ -29,12 +30,9 @@ export class ProductReviewComponent implements OnInit{
   reviewSubmitted = new EventEmitter();
 
   constructor() {
-
-  }
-
-  ngOnInit(): void {
     this.createTextClassifier();
     this.initQuestions();
+    this.isClassifierReady = true;
   }
 
   private initQuestions() {
@@ -57,8 +55,7 @@ export class ProductReviewComponent implements OnInit{
       },
       maxResults: 5
     });
-  
-    this.isClassifierReady = true;
+
     console.log('>>>> model obtained: ', this.textClassifier);
   }
 
@@ -97,8 +94,10 @@ export class ProductReviewComponent implements OnInit{
         }
       }
 
-      let totalScore = Math.ceil(totalPositive / 20);
-      this.scores.push(totalScore); //TODO: remove
+      totalPositive /= this.commentsList.length;
+      totalNegative /= this.commentsList.length;
+
+      let totalScore = Math.ceil(totalPositive * 100 / 20);
       this.reviewSubmitted.emit({id: this.product?.id, score: totalScore});
       this.isClassifierReady = true;
       this.initQuestions();
@@ -134,15 +133,4 @@ export class ProductReviewComponent implements OnInit{
   //   });
   // }
 
-}
-
-interface Comment {
-  question: string;
-  answer: string;
-}
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
 }

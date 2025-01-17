@@ -1,0 +1,27 @@
+.center-container {
+    display: flex;
+    justify-content: center; /* Horizontal centering */
+    align-items: center;    /* Vertical centering */
+    height: 100vh;          /* Full viewport height */
+}
+  
+.main-card {
+    width: 300px;  /* Adjust the width as needed */
+    height: 250px; /* Adjust the height as needed */
+    display: flex;
+    flex-direction: column; /* Stack child elements vertically */
+    justify-content: center; /* Center child elements vertically */
+    align-items: center;     /* Center child elements horizontally */
+    padding: 20px; /* Optional: Add padding */
+    padding-top: 40px;
+}
+
+.centered-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+}
+
+.main-button {
+    margin: 10px;
+}

@@ -1,8 +1,9 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { ProductReviewComponent } from '../components/product-review/product-review.component';
+import { ProductReviewComponent } from '../product-review/product-review.component';
+import { Product, Role } from '../../utils';
 
 @Component({
   selector: 'app-products-list',
@@ -17,6 +18,9 @@ export class ProductsListComponent {
   isSubmitReview: boolean = false;
   currentSelectedProduct: Product | null = null;
   reviews = new Map<number, number>();
+
+  @Input()
+  role: Role | null = null;
 
   constructor() {
     this.products.push({id: 0, name: 'product', description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'});
@@ -38,10 +42,4 @@ export class ProductsListComponent {
     this.isSubmitReview = false;
     this.currentSelectedProduct = null;
   }
-}
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
 }

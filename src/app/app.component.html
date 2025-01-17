@@ -1,1 +1,39 @@
-<app-products-list></app-products-list>
+<div class="center-container"
+  *ngIf="role == null"
+>
+    <mat-card
+      appearance="outlined"
+      class="main-card"
+    >
+        <mat-card-header>
+            <mat-card-title> Hello ! </mat-card-title>
+        </mat-card-header>
+        <br>
+        <mat-card-subtitle>Are you a .. ?</mat-card-subtitle>
+        <mat-card-actions class="centered-actions">
+            <button mat-raised-button
+              class="main-button"
+              (click)="continueAsCustomer()"
+            >
+            Customer
+            </button>
+            <button mat-raised-button
+                (click)="continueAsAdmin()"
+            >
+            Admin
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</div>
+
+<app-products-list
+  *ngIf="role != null"
+  [role]="role"
+></app-products-list>
+
+<button mat-raised-button
+  *ngIf="role != null"
+  (click)="back()"
+>
+Back
+</button>
