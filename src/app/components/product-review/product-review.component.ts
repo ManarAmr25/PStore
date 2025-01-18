@@ -7,7 +7,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {FormsModule} from '@angular/forms';
 import {TextClassifier, FilesetResolver} from '@mediapipe/tasks-text';
-import { Product, Role, Comment, Review } from '../../utils';
+import { Product, Role, Comment, Review, Constants } from '../../utils';
 import {MatCardModule} from '@angular/material/card';
 import { DataProviderService } from '../../services/data-provider.service';
 
@@ -35,11 +35,11 @@ export class ProductReviewComponent{
 
   private initQuestions() {
     this.commentsList = [];
-    this.commentsList.push({question: 'Did this product meet your expectations?', answer: ''});
-    // this.commentsList.push({question: 'How does this product compare to others you\'ve used in the same category?', answer: ''});
-    // this.commentsList.push({question: 'What do you think about the product\'s packaging and the delivery process?', answer: ''});
-    // this.commentsList.push({question: 'In your opinion, does this product offer good value for the price you paid?', answer: ''});
-    // this.commentsList.push({question: 'Do you have any additional comments?', answer: ''});
+    this.commentsList.push({question: 'How did the product meet your expectations in terms of quality and performance?', answer: ''});
+    this.commentsList.push({question: 'How easy and intuitive was it to use the product?', answer: ''});
+    this.commentsList.push({question: 'What do you think about the product\'s packaging and the delivery process?', answer: ''});
+    this.commentsList.push({question: 'How would you describe the overall value of the product in relation to its price?', answer: ''});
+    this.commentsList.push({question: 'How easy and intuitive was it to use the product?', answer: ''});
   }
 
   private async createTextClassifier() {
@@ -77,25 +77,42 @@ export class ProductReviewComponent{
 
       for (let i = 0; i < this.commentsList.length; i++) {
         const comment = this.commentsList[i];
-        let result = this.textClassifier.classify(comment.answer);
+        if (comment.answer === '') { // consider empty answers as neutral
+          totalPositive += 0.5;
+          totalNegative += 0.5;
+          continue;
+        }
+        let result = this.textClassifier.classify(comment.answer.trim());
         let categories = result.classifications[0].categories;
 
         console.log('>>>>> result ', i, ': ', categories[0].categoryName, ' = ', categories[0].score,
           ' ', categories[1].categoryName, ' = ', categories[1].score);
 
+        let positive: number;
+        let negative: number;
         if(categories[0].categoryName === 'positive') {
-          totalPositive += categories[0].score;
-          totalNegative += categories[1].score;
+          positive = categories[0].score;
+          negative = categories[1].score;
         } else {
-          totalNegative += categories[0].score;
-          totalPositive += categories[1].score;
+          negative = categories[0].score;
+          positive = categories[1].score;
         }
+
+        // Amplify negative probability
+        let factor = 2;
+        negative = (negative * factor) / (negative * factor + positive);
+        positive = 1 - negative;
+        console.log('>>>>>> after penality: positive = ', positive, ', negative = ', negative);
+
+        totalPositive += positive;
+        totalNegative += negative;
       }
 
       totalPositive /= this.commentsList.length;
       totalNegative /= this.commentsList.length;
 
-      let totalScore = Math.ceil(totalPositive * 100 / 20);
+      let totalScore = totalPositive * Constants.SCORE_UPPER_BOUND; // a rating score out of 5 (upper bound)
+      console.log('>>>>>> positive = ', totalPositive, ', negative = ', totalNegative, ', total score = ', totalScore)
       this.isShowRatingScore = true;
       this.ratingScore = totalScore;
       this.dataProvider.addProductReview(this.getCurrentProductId(), {comments: this.commentsList, score: totalScore});

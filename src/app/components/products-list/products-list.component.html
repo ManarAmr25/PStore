@@ -41,18 +41,23 @@
       *ngIf="isAdmin()"
     ></app-product-statistics>
 
-    <button mat-button
+    <button mat-raised-button
+      class="back-button"
       (click)="backToProductsList()"
     >
     Back to Products
     </button>
 </div>
 
-<app-product-histogram
-  *ngIf="isAdmin() && ! isReviewView"
-  [title]="'Products Average Ratings'"
-  [xAxisLabel]="'Product'"
-  [yAxisLabel]="'Average Rating'"
-  [data]="getProductsAverageRatings()"
-  [labels]="getProductsDisplayNames()"
-></app-product-histogram>
+<div
+  class="products-container-div"
+>
+  <app-product-histogram
+    *ngIf="isAdmin() && ! isReviewView"
+    [title]="'Products Average Ratings'"
+    [xAxisLabel]="'Product'"
+    [yAxisLabel]="'Average Rating'"
+    [data]="getProductsAverageRatings()"
+    [labels]="getProductsDisplayNames()"
+  ></app-product-histogram>
+</div>

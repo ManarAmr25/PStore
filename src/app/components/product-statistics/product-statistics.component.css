@@ -1,3 +1,17 @@
 .example-list-wrapping {
   max-width: 500px;
 }
+
+.products-container-div {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+.review-container-div {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}

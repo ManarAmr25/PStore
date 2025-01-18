@@ -1,7 +1,12 @@
 .products-container-div {
     display: flex;
     flex-direction: column;
-    /* align-items: center; */
     gap: 16px;
     padding: 16px;
+}
+
+.back-button {
+    padding: 5px;
+    margin: 5px;
+    margin-left: 16px;
 }

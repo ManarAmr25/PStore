@@ -7,3 +7,17 @@
 .full-width {
   width: 100%;
 }
+
+.products-container-div {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+}
+
+.form-div {
+  margin: 20px;
+}
+
+button {
+  margin: 10px;
+}

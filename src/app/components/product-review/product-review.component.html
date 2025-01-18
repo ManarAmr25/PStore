@@ -1,44 +1,55 @@
-<mat-card appearance="outlined">
-  <mat-card-header>Product Info</mat-card-header>
-  <mat-card-content>
-    <p>{{'Product ID: ' + getCurrentProductId()}}</p>
-    <p>{{'Product Name: ' + getCurrentProductName()}}</p>
-    <p>{{'Product Description: ' + getCurrentProductDescription()}}</p>
-  </mat-card-content>
-</mat-card>
-
-<mat-card appearance="outlined"
-  *ngIf="isShowRatingScore"
+<div
+  class="products-container-div"
 >
-  <mat-card-content>{{'Rating Score: ' + ratingScore}}</mat-card-content>
-</mat-card>
-
-<form class="comment-form">
-  <mat-form-field 
-    class="full-width"
-    *ngFor="let comment of commentsList"
-  >
-    <mat-label>{{ comment.question }}</mat-label>
-    <textarea matInput name="comment" [(ngModel)]="comment.answer"></textarea>
-  </mat-form-field>
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Product Info</mat-card-title>
+    </mat-card-header>
+    <mat-card-subtitle></mat-card-subtitle>
+    <mat-card-content>
+      <p>{{'Product ID: ' + getCurrentProductId()}}</p>
+      <p>{{'Product Name: ' + getCurrentProductName()}}</p>
+      <p>{{'Product Description: ' + getCurrentProductDescription()}}</p>
+    </mat-card-content>
+  </mat-card>
   
-  <button mat-raised-button
-    *ngIf="isClassifierReady"
-    (click)="onSubmitClick()"
+  <div
+    class="form-div"
   >
-    Submit
-  </button>
+    <mat-card appearance="outlined"
+      *ngIf="isShowRatingScore"
+      >
+      <mat-card-content>{{'Rating Score: ' + ratingScore}}</mat-card-content>
+    </mat-card>
 
-  <button mat-raised-button
-    [disabled]="true"
-    *ngIf="! isClassifierReady"
-  >
-    Submitting ...
-  </button>
+    <form class="comment-form">
+      <mat-form-field 
+        class="full-width"
+        *ngFor="let comment of commentsList"
+        >
+        <mat-label>{{ comment.question }}</mat-label>
+        <textarea matInput name="comment" [(ngModel)]="comment.answer"></textarea>
+      </mat-form-field>
 
-  <button mat-raised-button
-    (click)="clearFields()"
-  >
-    Clear
-  </button>
-</form>
+      <button mat-raised-button
+        *ngIf="isClassifierReady"
+        (click)="onSubmitClick()"
+      >
+      Submit
+      </button>
+
+      <button mat-raised-button
+        [disabled]="true"
+        *ngIf="! isClassifierReady"
+      >
+      Submitting ...
+      </button>
+
+      <button mat-raised-button
+        (click)="clearFields()"
+      >
+      Clear
+      </button>
+    </form>
+  </div>
+</div>

@@ -1,12 +1,19 @@
-<mat-card appearance="outlined">
-  <mat-card-header>Product Info</mat-card-header>
-  <mat-card-content>
-    <p>{{'Product ID: ' + getCurrentProductId()}}</p>
-    <p>{{'Product Name: ' + getCurrentProductName()}}</p>
-    <p>{{'Product Description: ' + getCurrentProductDescription()}}</p>
-    <p>{{'Product Average Rating: ' + getCurrentProductAverageRating()}}</p>
-  </mat-card-content>
-</mat-card>
+<div
+  class="products-container-div"
+>
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Product Info</mat-card-title>
+    </mat-card-header>
+    <mat-card-subtitle></mat-card-subtitle>
+    <mat-card-content>
+      <p>{{'Product ID: ' + getCurrentProductId()}}</p>
+      <p>{{'Product Name: ' + getCurrentProductName()}}</p>
+      <p>{{'Product Description: ' + getCurrentProductDescription()}}</p>
+      <p>{{'Product Average Rating: ' + getCurrentProductAverageRating()}}</p>
+    </mat-card-content>
+  </mat-card>
+</div>
 <br>
 <app-product-histogram
   [title]="'Product Ratings Distribution'"
@@ -17,10 +24,13 @@
 ></app-product-histogram>
 <br>
 <div
+  class="review-container-div"
   *ngFor="let review of reviews"
 >
   <mat-card appearance="outlined">
-    <mat-card-title>{{'Rating: ' + review.score}}</mat-card-title>
+    <mat-card-header>
+      <mat-card-title>{{'Rating: ' + review.score}}</mat-card-title>
+    </mat-card-header>
     <mat-card-content>
       <mat-list class="example-list-wrapping">
         <div

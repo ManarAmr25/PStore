@@ -23,9 +23,9 @@ export class ProductsListComponent {
   role: Role | null = null;
 
   constructor(private dataProvider: DataProviderService) {
-    this.products.push({id: 0, name: 'product', description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'});
-    this.products.push({id: 1, name: 'product', description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'});
-    this.products.push({id: 2, name: 'product', description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'});
+    this.products.push({id: 0, name: 'Smartphone', description: 'A high-performance smartphone with a 6.5-inch display, fast charging, and advanced camera features for stunning photos and videos.'});
+    this.products.push({id: 1, name: 'Wireless Headphones', description: 'Premium wireless headphones with noise-canceling technology, long battery life, and a comfortable fit for all-day listening.'});
+    this.products.push({id: 2, name: 'Smart TV', description: 'A sleek and smart 50-inch 4K Ultra HD TV with built-in streaming services, HDR support, and easy voice control integration.'});
   }
 
   switchToReviewView(product: Product) {
