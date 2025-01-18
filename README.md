@@ -1,6 +1,13 @@
 # Webapp
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.7.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.7.  
+  
+Try this app on [https://manaramr25.github.io/PStore/](https://manaramr25.github.io/PStore/)
+
+## Demo Video
+
+https://github.com/user-attachments/assets/34c04427-5564-4c84-a4ee-d889e639190a
+
 
 ## Development server
 
