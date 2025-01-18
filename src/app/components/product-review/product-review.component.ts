@@ -34,12 +34,7 @@ export class ProductReviewComponent{
   }
 
   private initQuestions() {
-    this.commentsList = [];
-    this.commentsList.push({question: 'How did the product meet your expectations in terms of quality and performance?', answer: ''});
-    this.commentsList.push({question: 'How easy and intuitive was it to use the product?', answer: ''});
-    this.commentsList.push({question: 'What do you think about the product\'s packaging and the delivery process?', answer: ''});
-    this.commentsList.push({question: 'How would you describe the overall value of the product in relation to its price?', answer: ''});
-    this.commentsList.push({question: 'How easy and intuitive was it to use the product?', answer: ''});
+    this.commentsList = this.dataProvider.generateEmptyReviewResponses();
   }
 
   private async createTextClassifier() {
@@ -54,7 +49,7 @@ export class ProductReviewComponent{
       maxResults: 5
     });
 
-    console.log('Classification model is ready: ', this.textClassifier);
+    console.log('bert_classifier.tflite is ready: ', this.textClassifier);
   }
 
 
@@ -74,45 +69,52 @@ export class ProductReviewComponent{
 
       let totalPositive = 0;
       let totalNegative = 0;
+      let weights = this.dataProvider.getReviewQuestionsWeights();
 
       for (let i = 0; i < this.commentsList.length; i++) {
-        const comment = this.commentsList[i];
-        if (comment.answer === '') { // consider empty answers as neutral
-          totalPositive += 0.5;
-          totalNegative += 0.5;
-          continue;
-        }
-        let result = this.textClassifier.classify(comment.answer.trim());
-        let categories = result.classifications[0].categories;
-
-        console.log('>>>>> result ', i, ': ', categories[0].categoryName, ' = ', categories[0].score,
-          ' ', categories[1].categoryName, ' = ', categories[1].score);
-
         let positive: number;
         let negative: number;
-        if(categories[0].categoryName === 'positive') {
-          positive = categories[0].score;
-          negative = categories[1].score;
+        const comment = this.commentsList[i];
+        console.log(`Question weight = ${weights[i]}`)
+
+        if (comment.answer.trim() === '') { // consider empty answers as neutral
+          positive = negative = 0.5;
         } else {
-          negative = categories[0].score;
-          positive = categories[1].score;
+          let result = this.textClassifier.classify(comment.answer.trim());
+          let categories = result.classifications[0].categories;
+  
+          if(categories[0].categoryName === 'positive') {
+            positive = categories[0].score;
+            negative = categories[1].score;
+          } else {
+            negative = categories[0].score;
+            positive = categories[1].score;
+          }
+
+          console.log(`Scores of response #${i}: positive = ${positive}, negative = ${negative}`);
         }
 
         // Amplify negative probability
         let factor = 2;
         negative = (negative * factor) / (negative * factor + positive);
         positive = 1 - negative;
-        console.log('>>>>>> after penality: positive = ', positive, ', negative = ', negative);
+        console.log(`Scores after negative penality of response #${i}: positive = ${positive}, negative = ${negative}`);
+
+        // multiply by the question weight
+        positive *= weights[i];
+        negative *= weights[i];
+        console.log(`Scores after considering question weight of response #${i}: positive = ${positive}, negative = ${negative}`);
 
         totalPositive += positive;
         totalNegative += negative;
       }
 
-      totalPositive /= this.commentsList.length;
-      totalNegative /= this.commentsList.length;
+      let weightsSum = weights.reduce((acc, val) => acc + val, 0)
+      totalPositive /= weightsSum;
+      totalNegative /= weightsSum;
 
       let totalScore = totalPositive * Constants.SCORE_UPPER_BOUND; // a rating score out of 5 (upper bound)
-      console.log('>>>>>> positive = ', totalPositive, ', negative = ', totalNegative, ', total score = ', totalScore)
+      console.log(`Total review score: total positive = ${totalPositive}, total negative = ${totalNegative}, total score = ${totalScore}/${Constants.SCORE_UPPER_BOUND}`);
       this.isShowRatingScore = true;
       this.ratingScore = totalScore;
       this.dataProvider.addProductReview(this.getCurrentProductId(), {comments: this.commentsList, score: totalScore});
@@ -135,6 +137,14 @@ export class ProductReviewComponent{
 
   getCurrentProductDescription(): string {
     return this.dataProvider.getCurrentProductDescription();
+  }
+
+  populateAnswers() {
+    this.ratingScore = 0;
+    this.isShowRatingScore = false;
+    let answers = this.dataProvider.generateRandomReviewResponses();
+    this.commentsList = answers;
+    console.log('>>>>>> this.commentList after = ', this.commentsList)
   }
 
   clearFields() {

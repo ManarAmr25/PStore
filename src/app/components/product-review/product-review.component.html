@@ -12,7 +12,7 @@
       <p>{{'Product Description: ' + getCurrentProductDescription()}}</p>
     </mat-card-content>
   </mat-card>
-  
+
   <div
     class="form-div"
   >
@@ -22,34 +22,41 @@
       <mat-card-content>{{'Rating Score: ' + ratingScore}}</mat-card-content>
     </mat-card>
 
-    <form class="comment-form">
+    <div
+      *ngFor="let c of commentsList; let i = index"
+    >
       <mat-form-field 
         class="full-width"
-        *ngFor="let comment of commentsList"
         >
-        <mat-label>{{ comment.question }}</mat-label>
-        <textarea matInput name="comment" [(ngModel)]="comment.answer"></textarea>
+        <mat-label>{{ c.question }}</mat-label>
+        <textarea matInput name="comment" [(ngModel)]="c.answer"></textarea>
       </mat-form-field>
+    </div>
 
-      <button mat-raised-button
-        *ngIf="isClassifierReady"
-        (click)="onSubmitClick()"
-      >
-      Submit
-      </button>
+    <button mat-raised-button
+      *ngIf="isClassifierReady"
+      (click)="onSubmitClick()"
+    >
+    Submit
+    </button>
 
-      <button mat-raised-button
-        [disabled]="true"
-        *ngIf="! isClassifierReady"
-      >
-      Submitting ...
-      </button>
+    <button mat-raised-button
+      [disabled]="true"
+      *ngIf="! isClassifierReady"
+    >
+    Submitting ...
+    </button>
 
-      <button mat-raised-button
-        (click)="clearFields()"
-      >
-      Clear
-      </button>
-    </form>
+    <button mat-raised-button
+      (click)="populateAnswers()"
+    >
+    Populate Answers
+    </button>
+
+    <button mat-raised-button
+      (click)="clearFields()"
+    >
+    Clear
+    </button>
   </div>
 </div>
