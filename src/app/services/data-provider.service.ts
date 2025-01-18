@@ -79,6 +79,14 @@ export class DataProviderService {
     return sumScores;
   }
 
+  computeCurrentProductReviewsCount() {
+    let currentProductReviews = this.getCurrentProductReviews();
+    if (currentProductReviews != null) {
+      return currentProductReviews.length;
+    }
+    return 0;
+  }
+
   computeProductsAverageRatings() {
     let ratingsMap = new Map<number, number>();
 

@@ -38,6 +38,10 @@ export class ProductStatisticsComponent {
     return this.dataProvider.computeCurrentProductAverageRating();
   }
 
+  getCurrentProductReviewsCount(): number {
+    return this.dataProvider.computeCurrentProductReviewsCount();
+  }
+
   getRatingsCount(){
     const ratingCounts = [0, 0, 0, 0, 0]; // 1 to 5 stars rating
     let reviews = this.dataProvider.getCurrentProductReviews();
