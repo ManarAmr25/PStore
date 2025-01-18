@@ -21,3 +21,12 @@
 button {
   margin: 10px;
 }
+
+.small-card {
+  margin: 5px;
+  margin-bottom: 15px;
+}
+
+.warning {
+  background-color: rgb(245, 229, 167);
+}

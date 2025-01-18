@@ -23,14 +23,15 @@ import { DataProviderService } from '../../services/data-provider.service';
 export class ProductReviewComponent{
   textClassifier: TextClassifier | null = null;
   isClassifierReady: boolean;
+  isClassifierLoaded: boolean;
   commentsList: Comment[] = [];
   ratingScore: number = 0;
   isShowRatingScore: boolean = false;
 
   constructor(private dataProvider: DataProviderService, private ngZone: NgZone) {
+    this.isClassifierReady = this.isClassifierLoaded = false;
     this.createTextClassifier();
     this.initQuestions();
-    this.isClassifierReady = true;
   }
 
   private initQuestions() {
@@ -50,6 +51,7 @@ export class ProductReviewComponent{
     });
 
     console.log('bert_classifier.tflite is ready: ', this.textClassifier);
+    this.isClassifierReady = this.isClassifierLoaded = true;
   }
 
 

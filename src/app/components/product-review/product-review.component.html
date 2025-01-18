@@ -17,9 +17,17 @@
     class="form-div"
   >
     <mat-card appearance="outlined"
+      class="small-card"
       *ngIf="isShowRatingScore"
       >
       <mat-card-content>{{'Rating Score: ' + ratingScore}}</mat-card-content>
+    </mat-card>
+
+    <mat-card appearance="outlined"
+      class="small-card warning"
+      *ngIf="! isClassifierLoaded"
+      >
+      <mat-card-content>Classifier is loading ... Please wait</mat-card-content>
     </mat-card>
 
     <div
@@ -34,7 +42,7 @@
     </div>
 
     <button mat-raised-button
-      *ngIf="isClassifierReady"
+      *ngIf="isClassifierReady && isClassifierLoaded"
       (click)="onSubmitClick()"
     >
     Submit
@@ -42,7 +50,14 @@
 
     <button mat-raised-button
       [disabled]="true"
-      *ngIf="! isClassifierReady"
+      *ngIf="! isClassifierLoaded"
+    >
+    Submit
+    </button>
+
+    <button mat-raised-button
+      [disabled]="true"
+      *ngIf="! isClassifierReady && isClassifierLoaded"
     >
     Submitting ...
     </button>
